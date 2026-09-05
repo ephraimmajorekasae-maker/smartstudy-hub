@@ -1,182 +1,189 @@
 <!DOCTYPE html>
-<html>
+<html lang="om">
 <head>
-  <title>SmartStudy Hub - Pomodoro Timer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartStudy Hub - Pomodoro Timer & Tracker</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
     }
-
-    .timer-card {
+    .container {
       background: #ffffff;
-      padding: 40px;
+      padding: 30px;
       border-radius: 20px;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
       text-align: center;
-      width: 360px;
+      width: 100%;
+      max-width: 400px;
     }
-
-    h1 {
-      color: #333;
-      margin-bottom: 5px;
-      font-size: 28px;
-    }
-
-    .author {
-      color: #888;
-      font-size: 14px;
-      margin-bottom: 25px;
-      font-weight: 600;
-    }
-
-    input[type="text"] {
-      width: 90%;
-      padding: 12px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      font-size: 16px;
-      outline: none;
-      transition: 0.3s;
-    }
-
-    input[type="text"]:focus {
-      border-color: #764ba2;
-    }
-
-    #timer {
-      font-size: 64px;
+    h1 { color: #333; margin-bottom: 5px; font-size: 26px; }
+    .author { color: #888; font-size: 14px; margin-bottom: 20px; font-weight: 600; }
+    
+    /* Timer Display */
+    .timer-display {
+      font-size: 48px;
       font-weight: bold;
-      color: #ff4757;
-      margin: 20px 0;
-      letter-spacing: 2px;
+      color: #1e3c72;
+      margin: 15px 0;
     }
-
-    .button-group {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    button {
-      flex: 1;
-      padding: 12px;
-      font-size: 15px;
-      font-weight: bold;
+    .controls button {
+      background: #1e3c72;
       color: white;
       border: none;
-      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 14px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: transform 0.2s, opacity 0.2s;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      opacity: 0.9;
-    }
-
-    .btn-start {
-      background: linear-gradient(135deg, #11998e, #38ef7d);
-    }
-
-    .btn-pause {
-      background: linear-gradient(135deg, #ff9966, #ff5e62);
-    }
-
-    .btn-reset {
-      background: linear-gradient(135deg, #56ccf2, #2f80ed);
-    }
-
-    #statusMessage {
-      margin-top: 15px;
-      color: #2ed573;
+      margin: 5px;
       font-weight: bold;
-      font-size: 15px;
     }
+    .controls button:hover { background: #2a5298; }
+
+    /* Stats Card */
+    .stats-card {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 25px;
+      text-align: left;
+      font-size: 14px;
+      color: #444;
+      border-top: 3px solid #1e3c72;
+    }
+    .btn-action {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .btn-reset { background: #dc3545; }
+    ul { padding-left: 20px; margin: 10px 0 0 0; }
+    li { margin-bottom: 4px; }
   </style>
 </head>
 <body>
 
-  <div class="timer-card">
+  <div class="container">
     <h1>SmartStudy Hub</h1>
-    <div class="author">Created by Ephrem</div>
-    
-    <input type="text" id="subject" placeholder="Gosa barnootaa galchi...">
-    
-    <div id="timer">30:00</div>
-    
-    <div class="button-group">
-      <button class="btn-start" onclick="startTimer()">Start</button>
-      <button class="btn-pause" onclick="pauseTimer()">Pause</button>
-      <button class="btn-reset" onclick="resetTimer()">Reset</button>
+    <div class="author">Pomodoro Timer & Tracker</div>
+
+    <!-- Pomodoro Timer Section (30 min) -->
+    <div class="timer-display" id="time">30:00</div>
+    <div class="controls">
+      <button onclick="startTimer()">Jalqabi</button>
+      <button onclick="pauseTimer()">Dhaabi</button>
+      <button onclick="resetTimer()">Haaromsi</button>
     </div>
 
-    <p id="statusMessage"></p>
+    <!-- Study Tracker Section -->
+    <div class="stats-card">
+      <h3 style="margin-top:0; color:#1e3c72;">📊 Gabaasa Qo'annaa</h3>
+      <p><b>Guyyoota Qo'atame:</b> <span id="daysCount">0</span> Guyyaa</p>
+      <p><b>Seensii Dhumaa:</b> <br><small id="lastTime">Hingalmeeffamne</small></p>
+
+      <div style="text-align: center;">
+        <button class="btn-action" onclick="recordStudy()">✅ Har'a Qo'adheera</button>
+        <button class="btn-action btn-reset" onclick="resetStats()">🔄 Reset</button>
+      </div>
+
+      <h4 style="margin-bottom: 5px; margin-top: 15px;">📜 Seenaa Qo'annaa (Dhuma 5):</h4>
+      <ul id="historyList"></ul>
+    </div>
   </div>
 
-  <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-
   <script>
-    let defaultTime = 30 * 60;
-    let timeLeft = defaultTime;
-    let timerInterval = null;
-    let isRunning = false;
+    // Pomodoro Timer Logic (Daqiiqaa 30)
+    let timeLeft = 30 * 60;
+    let timerId = null;
 
     function updateDisplay() {
       let minutes = Math.floor(timeLeft / 60);
       let seconds = timeLeft % 60;
-
-      if (seconds < 10) seconds = "0" + seconds;
-      if (minutes < 10) minutes = "0" + minutes;
-
-      document.getElementById("timer").innerText = minutes + ":" + seconds;
+      document.getElementById('time').innerText = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
     function startTimer() {
-      let subjectInput = document.getElementById("subject").value;
-      
-      if(subjectInput === "") {
-        alert("Maaloo jalqaba gosa barnootaa galchaa!");
-        return;
-      }
-
-      if (isRunning) return;
-
-      isRunning = true;
-      document.getElementById("statusMessage").innerText = "✓ Qo'annoon " + subjectInput + " jalqabameera!";
-      
-      timerInterval = setInterval(function() {
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          isRunning = false;
-          document.getElementById("alarmSound").play();
-          alert("Yeroon qo'annoo " + subjectInput + " xumurameera!");
-        } else {
+      if (timerId !== null) return;
+      timerId = setInterval(() => {
+        if (timeLeft > 0) {
           timeLeft--;
           updateDisplay();
+        } else {
+          clearInterval(timerId);
+          timerId = null;
+          alert("Yeroon qo'annaa xumurameera! Boqonnaa fudhadhu.");
         }
       }, 1000);
     }
 
     function pauseTimer() {
-      if (isRunning) {
-        clearInterval(timerInterval);
-        isRunning = false;
-        document.getElementById("statusMessage").innerText = "⏸ Teimeriin xiqqoo dhaabbateera.";
-      }
+      clearInterval(timerId);
+      timerId = null;
     }
 
     function resetTimer() {
-      clearInterval(timerInterval);
-      isRunning = false;
-      timeLeft = defaultTime;
+      pauseTimer();
+      timeLeft = 30 * 60;
       updateDisplay();
-      document.getElementById("statusMessage").innerText = "🔄 Teimeriin gara jalqabaatti deebi'eera.";
+    }
+
+    // Tracker Logic (localStorage)
+    let days = localStorage.getItem('studyDays') || 0;
+    let history = JSON.parse(localStorage.getItem('studyHistory')) || [];
+
+    document.getElementById('daysCount').innerText = days;
+    updateHistoryUI();
+
+    function recordStudy() {
+      let now = new Date();
+      let timeString = now.toLocaleDateString() + " - " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+      days = parseInt(days) + 1;
+      history.push(timeString);
+
+      localStorage.setItem('studyDays', days);
+      localStorage.setItem('studyHistory', JSON.stringify(history));
+
+      document.getElementById('daysCount').innerText = days;
+      updateHistoryUI();
+    }
+
+    function updateHistoryUI() {
+      let list = document.getElementById('historyList');
+      list.innerHTML = "";
+      history.slice(-5).reverse().forEach(item => {
+        let li = document.createElement('li');
+        li.innerText = item;
+        list.appendChild(li);
+      });
+      if(history.length > 0) {
+        document.getElementById('lastTime').innerText = history[history.length - 1];
+      }
+    }
+
+    function resetStats() {
+      if(confirm("Gabaasa kana qulqulleessuu barbaadduu?")) {
+        localStorage.clear();
+        days = 0;
+        history = [];
+        document.getElementById('daysCount').innerText = 0;
+        document.getElementById('lastTime').innerText = "Hingalmeeffamne";
+        updateHistoryUI();
+      }
     }
   </script>
 
