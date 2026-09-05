@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SmartStudy Hub - Pomodoro Timer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .timer-card {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 360px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 5px;
+      font-size: 28px;
+    }
+
+    .author {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    input[type="text"] {
+      width: 90%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #764ba2;
+    }
+
+    #timer {
+      font-size: 64px;
+      font-weight: bold;
+      color: #ff4757;
+      margin: 20px 0;
+      letter-spacing: 2px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+
+    .btn-pause {
+      background: linear-gradient(135deg, #ff9966, #ff5e62);
+    }
+
+    .btn-reset {
+      background: linear-gradient(135deg, #56ccf2, #2f80ed);
+    }
+
+    #statusMessage {
+      margin-top: 15px;
+      color: #2ed573;
+      font-weight: bold;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="timer-card">
+    <h1>SmartStudy Hub</h1>
+    <div class="author">Created by Ephrem</div>
+    
+    <input type="text" id="subject" placeholder="Gosa barnootaa galchi...">
+    
+    <div id="timer">30:00</div>
+    
+    <div class="button-group">
+      <button class="btn-start" onclick="startTimer()">Start</button>
+      <button class="btn-pause" onclick="pauseTimer()">Pause</button>
+      <button class="btn-reset" onclick="resetTimer()">Reset</button>
+    </div>
+
+    <p id="statusMessage"></p>
+  </div>
+
+  <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+  <script>
+    let defaultTime = 30 * 60;
+    let timeLeft = defaultTime;
+    let timerInterval = null;
+    let isRunning = false;
+
+    function updateDisplay() {
+      let minutes = Math.floor(timeLeft / 60);
+      let seconds = timeLeft % 60;
+
+      if (seconds < 10) seconds = "0" + seconds;
+      if (minutes < 10) minutes = "0" + minutes;
+
+      document.getElementById("timer").innerText = minutes + ":" + seconds;
+    }
+
+    function startTimer() {
+      let subjectInput = document.getElementById("subject").value;
+      
+      if(subjectInput === "") {
+        alert("Maaloo jalqaba gosa barnootaa galchaa!");
+        return;
+      }
+
+      if (isRunning) return;
+
+      isRunning = true;
+      document.getElementById("statusMessage").innerText = "✓ Qo'annoon " + subjectInput + " jalqabameera!";
+      
+      timerInterval = setInterval(function() {
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          isRunning = false;
+          document.getElementById("alarmSound").play();
+          alert("Yeroon qo'annoo " + subjectInput + " xumurameera!");
+        } else {
+          timeLeft--;
+          updateDisplay();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      if (isRunning) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        document.getElementById("statusMessage").innerText = "⏸ Teimeriin xiqqoo dhaabbateera.";
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+      timeLeft = defaultTime;
+      updateDisplay();
+      document.getElementById("statusMessage").innerText = "🔄 Teimeriin gara jalqabaatti deebi'eera.";
+    }
+  </script>
+
+</body>
+</html>
