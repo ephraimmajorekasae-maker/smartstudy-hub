@@ -59,6 +59,15 @@
       color: #444;
       border-top: 3px solid #1e3c72;
     }
+    .subject-input {
+      width: 100%;
+      padding: 8px 10px;
+      margin: 8px 0 12px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
     .btn-action {
       background: #28a745;
       color: white;
@@ -67,11 +76,11 @@
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      margin-top: 10px;
+      margin-top: 5px;
     }
     .btn-reset { background: #dc3545; }
     ul { padding-left: 20px; margin: 10px 0 0 0; }
-    li { margin-bottom: 4px; }
+    li { margin-bottom: 6px; line-height: 1.4; }
   </style>
 </head>
 <body>
@@ -91,6 +100,10 @@
     <!-- Study Tracker Section -->
     <div class="stats-card">
       <h3 style="margin-top:0; color:#1e3c72;">📊 Gabaasa Qo'annaa</h3>
+      
+      <label for="subjectInput"><b>📚 Gosa Barnootaa:</b></label>
+      <input type="text" id="subjectInput" class="subject-input" placeholder="Fkn: Hisaaba, Biyoolojii...">
+
       <p><b>Guyyoota Qo'atame:</b> <span id="daysCount">0</span> Guyyaa</p>
       <p><b>Seensii Dhumaa:</b> <br><small id="lastTime">Hingalmeeffamne</small></p>
 
@@ -149,16 +162,24 @@
     updateHistoryUI();
 
     function recordStudy() {
+      let subject = document.getElementById('subjectInput').value.trim();
+      if (!subject) {
+        subject = "Barnoota Walyalaa";
+      }
+
       let now = new Date();
-      let timeString = now.toLocaleDateString() + " - " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      let dateStr = now.toLocaleDateString();
+      let timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      let entry = `<b>${subject}</b> (${dateStr} - ${timeStr})`;
 
       days = parseInt(days) + 1;
-      history.push(timeString);
+      history.push(entry);
 
       localStorage.setItem('studyDays', days);
       localStorage.setItem('studyHistory', JSON.stringify(history));
 
       document.getElementById('daysCount').innerText = days;
+      document.getElementById('subjectInput').value = ""; // Clear input field
       updateHistoryUI();
     }
 
@@ -167,11 +188,11 @@
       list.innerHTML = "";
       history.slice(-5).reverse().forEach(item => {
         let li = document.createElement('li');
-        li.innerText = item;
+        li.innerHTML = item;
         list.appendChild(li);
       });
       if(history.length > 0) {
-        document.getElementById('lastTime').innerText = history[history.length - 1];
+        document.getElementById('lastTime').innerHTML = history[history.length - 1];
       }
     }
 
